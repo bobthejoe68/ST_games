@@ -1,5 +1,9 @@
 const boilSheetCache = new Map();
 
+function isMobileViewport() {
+  return window.matchMedia('(max-width: 768px)').matches;
+}
+
 function generateTwoFrameSpritesheet(img) {
   const w = img.naturalWidth || img.width || 160;
   const h = img.naturalHeight || img.height || 110;
@@ -231,9 +235,16 @@ function showDiscoveryToast(x, y, text, mode = 'new') {
   const toast = document.createElement('div');
   toast.className = `discovery-toast ${mode === 'known' ? 'already-known' : ''} ${mode === 'magic' ? 'magic-summon' : ''}`;
   toast.textContent = text;
-  toast.style.left = `${x}px`;
-  toast.style.top = `${y}px`;
   document.body.appendChild(toast);
+
+  // Clamp coordinates so toast never clips off the left/right/top edges on mobile phones
+  const toastWidth = toast.offsetWidth || 220;
+  const halfW = toastWidth / 2 + 12;
+  const clampedX = Math.max(halfW, Math.min(window.innerWidth - halfW, x));
+  const clampedY = Math.max(70, Math.min(window.innerHeight - 40, y));
+
+  toast.style.left = `${clampedX}px`;
+  toast.style.top = `${clampedY}px`;
   setTimeout(() => toast.remove(), 1900);
 }
 
@@ -261,10 +272,12 @@ chestTrigger.addEventListener('pointerdown', (e) => {
   goldenEl.style.opacity = '0';
   chestTrigger.appendChild(goldenEl);
 
+  const jumpOffsetX = isMobileViewport() ? 48 : 85;
+
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       goldenEl.style.opacity = '1';
-      goldenEl.style.transform = 'translateX(85px) translateY(-15px) scale(1.05) rotate(-4deg)';
+      goldenEl.style.transform = `translateX(${jumpOffsetX}px) translateY(-15px) scale(1.05) rotate(-4deg)`;
     });
   });
 
@@ -331,9 +344,9 @@ function summonBubblemancer() {
   const wrapper = document.createElement('div');
   wrapper.classList.add('shrimp-wrapper', 'bubblemancer-aura', 'swim-right');
   wrapper.title = 'there he is! (click to unlock!)';
-  wrapper.style.width = '186px';
+  wrapper.style.width = isMobileViewport() ? '130px' : '186px';
   wrapper.style.top = '45vh';
-  wrapper.style.animationDuration = '14s';
+  wrapper.style.animationDuration = isMobileViewport() ? '11s' : '14s';
 
   const img = document.createElement('img');
   img.classList.add('shrimp-sprite');
@@ -382,13 +395,16 @@ function popBubbleElement(bubble, countTowardPlayer = false) {
 
 function spawnBubble() {
   if (document.hidden) return;
+  const mobile = isMobileViewport();
+  if (mobile && bubbleLayer.childElementCount >= 10) return;
+
   const bubble = document.createElement('div');
   bubble.classList.add('bubble');
 
-  const size = Math.random() * 40 + 28;
+  const size = mobile ? (Math.random() * 26 + 24) : (Math.random() * 40 + 28);
   bubble.style.width = `${size}px`;
   bubble.style.height = `${size}px`;
-  bubble.style.left = `${Math.random() * 92 + 2}vw`;
+  bubble.style.left = `${Math.random() * 90 + 3}vw`;
 
   const intactImg = document.createElement('img');
   intactImg.src = BUBBLE_INTACT_URI;
@@ -408,7 +424,8 @@ function spawnBubble() {
 
 setInterval(() => {
   if (document.hidden) return;
-  const surfaceY = 162 - window.scrollY;
+  const skyHeight = isMobileViewport() ? 130 : 150;
+  const surfaceY = (skyHeight + 12) - window.scrollY;
   if (surfaceY <= 0) return;
   document.querySelectorAll('.bubble:not(.popped)').forEach(b => {
     if (b.getBoundingClientRect().top <= surfaceY) {
@@ -418,7 +435,7 @@ setInterval(() => {
 }, 90);
 
 setInterval(spawnBubble, 550);
-for (let i = 0; i < 8; i++) setTimeout(spawnBubble, i * 180);
+for (let i = 0; i < 6; i++) setTimeout(spawnBubble, i * 180);
 
 const shrimpBackLayer = document.getElementById('shrimp-layer-back');
 const shrimpFrontLayer = document.getElementById('shrimp-layer-front');
@@ -463,6 +480,11 @@ function pickWeightedWildShrimp(onlyCommon = false) {
 function spawnShrimp(startImmediatelyInsideScreen = false) {
   if (document.hidden && !startImmediatelyInsideScreen) return;
 
+  const mobile = isMobileViewport();
+  const activeCount = shrimpBackLayer.childElementCount + shrimpFrontLayer.childElementCount;
+  // Cap simultaneous wild shrimp on mobile so narrow screens don't get overcrowded
+  if (mobile && activeCount >= 5 && !startImmediatelyInsideScreen) return;
+
   const species = pickWeightedWildShrimp(startImmediatelyInsideScreen);
   const wrapper = document.createElement('div');
   wrapper.classList.add('shrimp-wrapper');
@@ -475,7 +497,8 @@ function spawnShrimp(startImmediatelyInsideScreen = false) {
   wrapper.appendChild(img);
 
   const isBackground = Math.random() > 0.55;
-  const size = isBackground ? (Math.random() * 42 + 90) : (Math.random() * 60 + 138);
+  const rawSize = isBackground ? (Math.random() * 42 + 90) : (Math.random() * 60 + 138);
+  const size = mobile ? rawSize * 0.64 : rawSize;
   wrapper.style.width = `${size}px`;
 
   if (isBackground) {
@@ -488,13 +511,13 @@ function spawnShrimp(startImmediatelyInsideScreen = false) {
   const waveRect = waterlineWavesEl.getBoundingClientRect();
   const footerRect = seaFloorEl.getBoundingClientRect();
   const minTopPx = Math.max(window.innerHeight * 0.22, waveRect.bottom + 20);
-  const maxTopPx = Math.min(window.innerHeight * 0.76, footerRect.top - 135);
+  const maxTopPx = Math.min(window.innerHeight * 0.76, footerRect.top - (mobile ? 95 : 135));
   const safeMaxTopPx = Math.max(minTopPx + 40, maxTopPx);
   wrapper.style.top = `${minTopPx + Math.random() * (safeMaxTopPx - minTopPx)}px`;
 
   const swimRight = Math.random() > 0.5;
   const baseDuration = species.swimDuration || 9.0;
-  const duration = isBackground ? baseDuration * 1.25 : baseDuration;
+  const duration = (isBackground ? baseDuration * 1.25 : baseDuration) * (mobile ? 0.85 : 1);
   const scaleX = swimRight ? 1 : -1;
 
   wrapper.classList.add(swimRight ? 'swim-right' : 'swim-left');
@@ -532,7 +555,8 @@ function spawnShrimp(startImmediatelyInsideScreen = false) {
   wrapper.addEventListener('animationend', (e) => { if (e.target === wrapper) wrapper.remove(); });
 }
 
-for (let i = 0; i < 4; i++) spawnShrimp(true);
+const initialShrimpCount = isMobileViewport() ? 3 : 4;
+for (let i = 0; i < initialShrimpCount; i++) spawnShrimp(true);
 setInterval(() => spawnShrimp(false), SPAWN_INTERVAL_MS);
 
 if (!window.CSS || !CSS.supports('animation-timeline', 'scroll(root)')) {
@@ -584,7 +608,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     const target = document.querySelector(hash);
     if (target) {
       e.preventDefault();
-      smoothLerpScrollTo(target, 36);
+      smoothLerpScrollTo(target, isMobileViewport() ? 20 : 36);
     }
   });
 });

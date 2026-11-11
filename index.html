@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>shrimptooth games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute;pointer-events:none;">
+    <defs>
+      <filter id="boil-displacement-filter">
+        <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="1" result="t" seed="2"/>
+        <feDisplacementMap in2="t" in="SourceGraphic" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div id="sky-zone" class="sky-zone">
+    <img id="sun-sprite" class="cartoon-sun boil-img" src="assets/sun.png" alt="sun" />
+    <img class="cloud cloud-1 cloud-sprite boil-img" src="assets/cloud.png" alt="cloud" />
+    <img class="cloud cloud-2 cloud-sprite boil-img" src="assets/cloud.png" alt="cloud" />
+
+    <div id="boat-trigger" class="boat-wrapper" title="hello">
+      <img id="cabin-fishershrimp" class="cabin-fishershrimp boil-img" src="assets/shrimp-fisher.png" alt="ferryshrimp" />
+      <img id="boat-sprite" class="boat-img boil-img" src="assets/boat.png" alt="the ferryshrimp's boat" />
+    </div>
+
+    <div id="waterline-waves" class="waterline-waves">
+      <div id="wave-back" class="wave-strip back-wave" style="background-image: url('assets/wave-back.png');"></div>
+      <div id="wave-front" class="wave-strip front-wave" style="background-image: url('assets/wave-front.png');"></div>
+    </div>
+  </div>
+
+  <div class="sunbeams"></div>
+
+  <div id="bg-parallax-far" class="aquarium-layer">
+    <div class="coral-piece coral-left" style="top: 210px; width: 280px;"><img class="far-coral-img" src="assets/coral-far.png" alt="coral" /></div>
+    <div class="coral-piece coral-right" style="top: 430px; width: 295px;"><img class="far-coral-img" src="assets/coral-far.png" alt="coral" /></div>
+    <div class="coral-piece coral-left" style="top: 850px; width: 285px;"><img class="far-coral-img" src="assets/coral-far.png" alt="coral" /></div>
+    <div class="coral-piece coral-right" style="top: 1080px; width: 280px;"><img class="far-coral-img" src="assets/coral-far.png" alt="coral" /></div>
+  </div>
+
+  <div id="shrimp-layer-back" class="aquarium-layer"></div>
+
+  <div id="bg-parallax-mid" class="aquarium-layer">
+    <div class="coral-piece coral-right" style="top: 200px; width: 300px;"><img class="mid-coral-img" src="assets/coral-mid.png" alt="coral" /></div>
+    <div class="coral-piece coral-left" style="top: 500px; width: 310px;"><img class="mid-coral-img" src="assets/coral-mid.png" alt="coral" /></div>
+    <div class="coral-piece coral-right" style="top: 780px; width: 295px;"><img class="mid-coral-img" src="assets/coral-mid.png" alt="coral" /></div>
+    <div class="coral-piece coral-left" style="top: 1180px; width: 305px;"><img class="mid-coral-img" src="assets/coral-mid.png" alt="coral" /></div>
+  </div>
+
+  <div id="bg-parallax-near" class="aquarium-layer">
+    <div class="coral-piece coral-left" style="top: 320px; width: 260px;"><img class="near-coral-img" src="assets/coral-near.png" alt="coral" /></div>
+    <div class="coral-piece coral-right" style="top: 610px; width: 270px;"><img class="near-coral-img" src="assets/coral-near.png" alt="coral" /></div>
+    <div class="coral-piece coral-left" style="top: 970px; width: 255px;"><img class="near-coral-img" src="assets/coral-near.png" alt="coral" /></div>
+    <div class="coral-piece coral-right" style="top: 1310px; width: 270px;"><img class="near-coral-img" src="assets/coral-near.png" alt="coral" /></div>
+  </div>
+
+  <div id="shrimp-layer-front" class="aquarium-layer"></div>
+  <div id="bubble-layer" class="aquarium-layer"></div>
+
+  <div class="bottom-hud">
+    <button id="open-grimoire-btn" class="grimoire-btn" title="open shrimp grimoire">
+      <img id="grimoire-btn-medal" class="grimoire-btn-medal hidden" src="assets/golden-medal.png" alt="golden medal" />
+      <div id="grimoire-badge" class="grimoire-badge hidden">!</div>
+      <img id="grimoire-book-icon" class="book-cover-icon" src="assets/grimoire-book.png" alt="shrimp grimoire" />
+      <span>shrimp grimoire</span>
+    </button>
+  </div>
+
+  <div id="grimoire-modal" class="modal-overlay hidden">
+    <div class="grimoire-book">
+      <div class="grimoire-header">
+        <div class="grimoire-title-group">
+          <h2>the shrimp grimoire</h2>
+          <div class="grimoire-progress">
+            species discovered: <span id="discovered-count">0</span> / <span id="total-species-count">12</span>
+          </div>
+        </div>
+        <div id="golden-medal-banner" class="golden-medal-banner hidden">
+          <img id="golden-medal-img" src="assets/golden-medal.png" alt="golden medal" />
+          <div class="medal-text">
+            <strong>shrimp connoisseur!</strong>
+            <span>all shrimp species discovered!</span>
+          </div>
+        </div>
+        <button id="close-grimoire-btn" class="close-modal-btn" title="close">×</button>
+      </div>
+      <p style="margin-bottom: 18px; font-size: 1.05rem;">
+        there be shrimp in these waters...! scout them out to add their beautiful faces to your grimoire
+      </p>
+      <div id="grimoire-submenu-wrap" class="grimoire-submenu-wrap">
+        <div id="submenu-sparkle-layer" class="submenu-sparkle-layer"></div>
+        <div id="grimoire-grid" class="grimoire-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <header>
+      <div class="logo-container">
+        <div class="logo-circle">
+          <img class="logo-circle-img" src="assets/logo-circle.png" alt="shrimptooth logo" />
+        </div>
+        <h1 class="logo-title-lockup">
+          <span class="title-word-main">shrimptooth</span>
+          <span class="title-word-sub">games</span>
+        </h1>
+      </div>
+
+      <nav>
+        <a href="#news">big news</a>
+        <a href="#games">our games</a>
+        <a href="#about">about us</a>
+        <a href="#contact">contact</a>
+      </nav>
+    </header>
+
+    <section id="news" class="content-card">
+      <h2>big news</h2>
+      <h3 class="news-headline">"train game" announcement trailer</h3>
+      <p>it's locomoting time! train all over the world in this brand new train video game</p>
+      <div class="video-embed-container">
+        <iframe 
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+          title="Train Game Announcement Trailer" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <section id="games" class="content-card">
+      <h2>our games</h2>
+      <p>peruse our collection of games and experiences! some of these are larger "mainline" releases, others were crafted for 48 or 72-hour game jams. all are created with love</p>
+
+      <div class="games-subsection">
+        <h3 class="subsection-heading">major projects</h3>
+        <div class="game-card featured-game-card">
+          <div class="thumb-wrapper featured-thumb-wrap">
+            <img class="game-thumb" src="assets/train-game.png" alt="train game thumbnail" />
+          </div>
+          <div class="featured-game-info">
+            <div class="game-title-row">
+              <h4>train game</h4>
+              <span class="year-badge major-badge">in development</span>
+            </div>
+            <p>a mysterious train-themed game. it has never been seen by human eyes. perhaps because it is still in production</p>
+            <a href="#games" class="btn">learn more</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="games-subsection" style="margin-top: 42px;">
+        <h3 class="subsection-heading">jam games</h3>
+        <div class="games-grid">
+          <div class="game-card">
+            <div class="thumb-wrapper">
+              <div class="ld-award-medal" tabindex="0">
+                <img class="ld-medal-img" src="assets/ld52-medal.png" alt="ludum dare 52 medal" />
+                <div class="ld-medal-tooltip">won top 5 overall in ludum dare 52!</div>
+              </div>
+              <img class="game-thumb" src="assets/cooking-game.png" alt="macrogreens thumbnail" />
+            </div>
+            <div class="game-title-row">
+              <h4>macrogreens</h4>
+              <span class="year-badge">2023</span>
+            </div>
+            <p>grow plants and cook up dishes for a manic crowd of fully-voiced customers! featuring kinetic mouse controls and a vegetable that screams</p>
+            <a href="#games" class="btn">play now</a>
+          </div>
+
+          <div class="game-card">
+            <div class="thumb-wrapper">
+              <img class="game-thumb" src="assets/block-game.png" alt="conjoinathan thumbnail" />
+            </div>
+            <div class="game-title-row">
+              <h4>conjoinathan</h4>
+              <span class="year-badge">2021</span>
+            </div>
+            <p>every friend you touch becomes part of you. assemble yourself into shapes to solve platforming puzzles. this was genuinely the best name i could think of</p>
+            <a href="#games" class="btn">play now</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="content-card">
+      <h2>about us</h2>
+      <p>hello! <strong>shrimptooth games</strong> is a miniscule indie studio founded by josh edwards (that's me). our mission is to bring together artists, composers, voice actors, and generally cool people to craft some pretty fun games.</p>
+      <p>i first started making games when he was 10 years old, smashing together blocks of code to make animations, small games, and eventually some larger games too.</p>
+      <p>now, almost 20 years on (ouch), i still can't wait to start on new projects, collaborate with rad people, and create stories that surprise, resonate, or just make people laugh. </p>
+      <p>it takes a village (or should i say an aquarium) to make a game, and this passion is at the heart of shrimptooth games. i hope you enjoy the weird little things we create.</p>
+    </section>
+
+    <section id="contact" class="content-card">
+      <h2>contact</h2>
+      <p>have an idea for a collaboration, want to join in on an ongoing project, or just send us pictures of really cool looking shrimp? drop a message in a bottle</p>
+      <a href="mailto:joshedwardsdev@gmail.com" class="btn">email josh</a>
+      <a href="#contact" class="btn">social links</a>
+      <a href="#contact" class="btn">itch</a>
+    </section>
+  </main>
+
+  <footer id="sea-floor">
+    <div id="treasure-chest-trigger" class="chest-container" title="hmmm">
+      <img id="chest-sprite" class="chest-img boil-img" src="assets/chest-closed.png" alt="treasure chest" />
+    </div>
+    <p>© 2026 shrimptooth games • created with whimsy at the bottom of the sea</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

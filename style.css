@@ -17,7 +17,7 @@
   --shrimp-cursor: auto;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: var(--water-deep); }
+html { background: var(--water-deep); -webkit-text-size-adjust: 100%; }
 
 body, p, .grimoire-entry p, .medal-text span {
   font-family: var(--font-body);
@@ -25,7 +25,7 @@ body, p, .grimoire-entry p, .medal-text span {
 body {
   color: var(--border-color);
   background: linear-gradient(180deg, #90e0ef 0px, var(--water-surface) 150px, var(--water-mid) 45%, var(--water-deep) 100%);
-  overflow-x: hidden; position: relative; user-select: none;
+  overflow-x: hidden; position: relative; user-select: none; -webkit-user-select: none;
   cursor: var(--shrimp-cursor);
 }
 
@@ -68,6 +68,8 @@ h1, h2, h3, h4,
 
 a, button, .coral-piece, .bubble, .shrimp-wrapper, .boat-wrapper, .chest-container, .ld-award-medal {
   cursor: var(--shrimp-cursor);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::-webkit-scrollbar { width: 18px; }
@@ -81,7 +83,7 @@ a, button, .coral-piece, .bubble, .shrimp-wrapper, .boat-wrapper, .chest-contain
 ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ffe08a 0%, #ff856a 100%); }
 ::-webkit-scrollbar-thumb:active { background: var(--primary-orange); }
 
-.grimoire-book::-webkit-scrollbar { width: 22px; }
+.grimoire-book::-webkit-scrollbar { width: 18px; }
 .grimoire-book::-webkit-scrollbar-track {
   background: #caf0f8;
   border: 4px solid var(--border-color);
@@ -134,7 +136,7 @@ body.boil-tick .boil-fallback { filter: url(#boil-displacement-filter); }
   @keyframes parallaxNear { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -580px, 0); } }
 }
 
-.coral-piece { position: absolute; pointer-events: auto; }
+.coral-piece { position: absolute; width: var(--coral-w, 280px); pointer-events: auto; }
 .coral-left { left: -12px; }
 .coral-right { right: -12px; transform: scaleX(-1); }
 .coral-piece img { display: block; width: 100%; height: auto; transform-origin: left center; }
@@ -184,6 +186,7 @@ body.boil-tick .boil-fallback { filter: url(#boil-displacement-filter); }
   background: url('assets/ui-toast-new.png') center / 100% 100% no-repeat;
   color: var(--border-color); padding: 15px 22px 12px 22px;
   font-size: 1rem; pointer-events: none; white-space: nowrap;
+  max-width: calc(100vw - 24px); text-align: center;
   animation: toastFloat 1.9s ease-out forwards;
 }
 .discovery-toast.magic-summon {
@@ -200,9 +203,12 @@ main { position: relative; z-index: 10; max-width: 840px; margin: 0 auto; paddin
 header, nav a, .content-card, .game-card, .btn { pointer-events: auto; }
 header { text-align: center; margin-bottom: 70px; }
 
+/* 9-slice border-image prevents boxes from stretching or squishing on any screen height/width */
 .logo-container {
   display: flex; align-items: center; justify-content: center; gap: 32px;
-  width: 100%; background: url('assets/ui-banner-box.png') center / 100% 100% no-repeat;
+  width: 100%;
+  border: 1px solid transparent;
+  border-image: url('assets/ui-banner-box.png') 52 fill / 34px / 0 stretch;
   padding: 32px 46px 42px 46px; margin-bottom: 24px;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); flex-wrap: wrap;
 }
@@ -212,24 +218,33 @@ header { text-align: center; margin-bottom: 70px; }
 .logo-circle-img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 .logo-title-lockup { display: flex; flex-direction: column; align-items: flex-start; line-height: 0.92; text-transform: lowercase; }
-.title-word-main { font-size: 4.1rem; color: var(--primary-orange); text-shadow: 4px 4px 0px var(--border-color); letter-spacing: 1px; transform: rotate(-1.5deg); }
+.title-word-main { font-size: clamp(2.35rem, 8vw, 4.1rem); color: var(--primary-orange); text-shadow: 4px 4px 0px var(--border-color); letter-spacing: 1px; transform: rotate(-1.5deg); }
 .title-word-sub {
-  font-size: 2.6rem; color: var(--secondary-yellow);
+  font-size: clamp(1.75rem, 5.5vw, 2.6rem); color: var(--secondary-yellow);
   text-shadow: 3.5px 3.5px 0px var(--border-color);
   margin-left: 118px; margin-top: 6px; transform: rotate(2deg); letter-spacing: 1.5px;
 }
 
 nav { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
 nav a {
-  text-decoration: none; background: url('assets/ui-nav-btn.png') center / 100% 100% no-repeat;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-image: url('assets/ui-nav-btn.png') 28 fill / 18px / 0 stretch;
   color: var(--border-color); font-size: 1.25rem;
   padding: 16px 30px 14px 30px; transition: transform 0.15s ease; text-transform: lowercase;
 }
 nav a:hover { transform: translateY(-4px); filter: brightness(1.05); }
 nav a:active { transform: translateY(3px); }
 
-.content-card { background: url('assets/ui-card-box.png') center / 100% 100% no-repeat; padding: 44px 46px 54px 46px; margin-bottom: 80px; }
+.content-card {
+  border: 1px solid transparent;
+  border-image: url('assets/ui-card-box.png') 64 fill / 38px / 0 stretch;
+  padding: 44px 46px 54px 46px; margin-bottom: 80px;
+}
 #contact.content-card { margin-bottom: 15px; }
+.contact-btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.contact-btn-group .btn { margin-top: 0; }
+
 h2 { font-size: 2.3rem; color: var(--primary-orange); text-shadow: 2px 2px 0 var(--border-color); margin-bottom: 14px; text-transform: lowercase; display: inline-block; border-bottom: 4px dashed var(--water-mid); padding-bottom: 5px; }
 p { font-size: 1.18rem; line-height: 1.6; margin-bottom: 16px; }
 
@@ -240,19 +255,20 @@ p { font-size: 1.18rem; line-height: 1.6; margin-bottom: 16px; }
 .games-subsection { margin-top: 22px; }
 .subsection-heading {
   font-size: 1.55rem; color: var(--border-color);
-  background: url('assets/ui-nav-btn.png') center / 100% 100% no-repeat;
+  border: 1px solid transparent;
+  border-image: url('assets/ui-nav-btn.png') 28 fill / 18px / 0 stretch;
   display: inline-block; padding: 14px 26px 12px 26px; margin-bottom: 18px; text-transform: lowercase;
 }
 
-.games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 26px; }
-.game-card { background: url('assets/ui-game-card.png') center / 100% 100% no-repeat; padding: 24px 24px 30px 24px; text-align: center; transition: transform 0.2s ease; }
+.games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 26px; }
+.game-card {
+  border: 1px solid transparent;
+  border-image: url('assets/ui-game-card.png') 50 fill / 28px / 0 stretch;
+  padding: 24px 24px 30px 24px; text-align: center; transition: transform 0.2s ease;
+}
 .game-card:hover { transform: translateY(-5px); }
 
 .featured-game-card { display: grid; grid-template-columns: 1.15fr 1fr; gap: 26px; align-items: center; text-align: left; }
-@media (max-width: 650px) {
-  .featured-game-card { grid-template-columns: 1fr; text-align: center; }
-  .title-word-sub { margin-left: 40px; }
-}
 
 .thumb-wrapper { position: relative; margin-bottom: 14px; }
 .featured-thumb-wrap { margin-bottom: 0; }
@@ -281,14 +297,16 @@ p { font-size: 1.18rem; line-height: 1.6; margin-bottom: 16px; }
 .ld-award-medal:hover .ld-medal-tooltip, .ld-award-medal:focus .ld-medal-tooltip { opacity: 1; transform: translateY(0) scale(1); }
 
 .btn {
-  display: inline-block; background: url('assets/ui-action-btn.png') center / 100% 100% no-repeat;
+  display: inline-block;
+  border: 1px solid transparent;
+  border-image: url('assets/ui-action-btn.png') 24 fill / 16px / 0 stretch;
   color: white; text-decoration: none; padding: 15px 26px 13px 26px;
   font-size: 1rem; margin-top: 6px; text-shadow: 1.5px 1.5px 0 var(--border-color); transition: transform 0.12s ease;
 }
 .btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
 .btn:active { transform: translateY(3px); }
 
-footer { position: relative; z-index: 22; background: url('assets/sand-floor.png') top center / 100% 100% no-repeat; padding: 95px 20px 45px 20px; text-align: center; margin-top: 135px; }
+footer { position: relative; z-index: 22; background: url('assets/sand-floor.png') top center / 100% 100% no-repeat; padding: 95px 20px 45px 20px; text-align: center; margin-top: 135px; overflow-x: clip; }
 footer p { font-size: 1.15rem; margin-bottom: 0; }
 .chest-container { position: absolute; top: -82px; left: 50%; transform: translateX(-50%); width: 160px; height: 130px; pointer-events: auto; z-index: 25; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .chest-container:hover { transform: translateX(-50%) scale(1.07) rotate(-2deg); }
@@ -338,17 +356,21 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
 .modal-overlay.hidden { display: none !important; }
 
 .grimoire-book {
-  background: url('assets/ui-grimoire-book-box.png') center / 100% 100% no-repeat;
+  border: 1px solid transparent;
+  border-image: url('assets/ui-grimoire-book-box.png') 64 fill / 36px / 0 stretch;
   max-width: 900px; width: 100%; max-height: 88vh; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 42px 38px 48px 42px; position: relative;
 }
 .grimoire-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 4px dashed #d4a373; padding-bottom: 15px; margin-bottom: 18px; flex-wrap: wrap; gap: 15px; }
 .grimoire-title-group h2 { margin-bottom: 4px; border: none; padding: 0; }
 .grimoire-progress { color: var(--water-mid); font-size: 1.1rem; }
+.grimoire-intro-text { margin-bottom: 18px; font-size: 1.05rem; }
 
 .golden-medal-banner {
   display: flex; align-items: center; gap: 12px;
-  background: url('assets/ui-medal-banner.png') center / 100% 100% no-repeat;
+  border: 1px solid transparent;
+  border-image: url('assets/ui-medal-banner.png') 28 fill / 18px / 0 stretch;
   padding: 12px 22px 13px 22px; animation: medalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .golden-medal-banner.hidden { display: none; }
@@ -362,13 +384,17 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
 .close-modal-btn {
   background: url('assets/ui-close-btn.png') center / 100% 100% no-repeat;
   color: white; border: none; width: 52px; height: 52px;
-  font-size: 1.6rem; padding-top: 2px;
+  font-size: 1.6rem; padding-top: 2px; flex-shrink: 0;
 }
 .close-modal-btn:active { transform: translateY(3px); }
 
 .grimoire-submenu-wrap { position: relative; padding: 6px; border-radius: 26px; }
 .grimoire-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; position: relative; z-index: 2; }
-.grimoire-entry { background: url('assets/ui-game-card.png') center / 100% 100% no-repeat; padding: 22px 16px 24px 16px; text-align: center; position: relative; transition: transform 0.2s ease; }
+.grimoire-entry {
+  border: 1px solid transparent;
+  border-image: url('assets/ui-game-card.png') 50 fill / 24px / 0 stretch;
+  padding: 22px 16px 24px 16px; text-align: center; position: relative; transition: transform 0.2s ease;
+}
 .grimoire-entry.unlocked:hover { transform: translateY(-4px); }
 .grimoire-submenu-wrap.all-unlocked .grimoire-entry.unlocked { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)); }
 .grimoire-entry.locked { opacity: 0.82; }
@@ -399,3 +425,167 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
 .submenu-sparkle-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; overflow: hidden; }
 .submenu-sparkle { position: absolute; width: 24px; height: 24px; pointer-events: none; animation: sparkleTwinkle 1.3s ease-in-out forwards; }
 @keyframes sparkleTwinkle { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(1.25) rotate(45deg); opacity: 1; } 100% { transform: scale(0) rotate(90deg); opacity: 0; } }
+
+/* ==========================================================================
+   TOUCHSCREEN & MOBILE OPTIMIZATIONS
+   ========================================================================== */
+
+/* On touchscreens (no mouse hover), prevent foreground coral layers from blocking taps on background shrimp */
+@media (hover: none) and (pointer: coarse) {
+  .coral-piece { pointer-events: none; }
+}
+
+/* Tablet & Mobile Layout (<= 768px) */
+@media (max-width: 768px) {
+  :root { --sky-height: 130px; }
+
+  /* Sky zone elements scaled & spaced so they don't collide with the boat */
+  .cartoon-sun { width: 54px; height: 54px; left: 4%; top: 10px; }
+  .cloud-1 { width: 88px; left: 17%; top: 16px; }
+  .cloud-2 { width: 100px; right: 5%; top: 14px; }
+  .boat-wrapper { width: 155px; height: 110px; bottom: -18px; }
+  .cabin-fishershrimp { width: 74px; top: 22px; left: 38px; }
+
+  /* Tame coral visual clutter on narrow screens */
+  .coral-piece {
+    width: clamp(90px, 26vw, 138px) !important;
+    opacity: 0.72;
+  }
+  .coral-left { left: -24px; }
+  .coral-right { right: -24px; }
+  /* Hide every 4th coral piece on mobile to open up more water space */
+  .aquarium-layer .coral-piece:nth-child(4) { display: none; }
+
+  main { padding: 48px 14px 36px 14px; }
+  header { margin-bottom: 44px; }
+
+  .logo-container {
+    flex-direction: column;
+    gap: 14px;
+    padding: 26px 22px 32px 22px;
+    border-image-width: 26px;
+  }
+  .logo-circle { width: 112px; height: 112px; }
+  .logo-title-lockup { align-items: center; text-align: center; }
+  .title-word-main { text-shadow: 3px 3px 0px var(--border-color); }
+  .title-word-sub {
+    margin-left: 0;
+    margin-top: 4px;
+    text-shadow: 2.5px 2.5px 0px var(--border-color);
+  }
+
+  /* 2x2 balanced thumb-friendly navigation grid on mobile */
+  nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  nav a {
+    font-size: 1.08rem;
+    padding: 13px 12px 11px 12px;
+    text-align: center;
+  }
+
+  .content-card {
+    padding: 28px 20px 34px 20px;
+    margin-bottom: 48px;
+    border-image-width: 26px;
+  }
+  h2 { font-size: 1.85rem; margin-bottom: 12px; }
+  p { font-size: 1.05rem; line-height: 1.52; margin-bottom: 14px; }
+  .news-headline { font-size: 1.35rem; }
+  .video-embed-container { border-radius: 16px; box-shadow: 0 5px 0 var(--border-color); }
+
+  .subsection-heading { font-size: 1.3rem; padding: 12px 20px 10px 20px; }
+  .featured-game-card { grid-template-columns: 1fr; gap: 16px; text-align: center; }
+  .featured-game-card .game-title-row { justify-content: center; }
+  .featured-game-card .game-thumb, .game-thumb { height: 165px; }
+  .game-card { padding: 20px 18px 24px 18px; border-image-width: 22px; }
+  .game-card h4 { font-size: 1.4rem; }
+
+  .ld-medal-tooltip {
+    right: 0;
+    font-size: 0.78rem;
+    padding: 11px 14px 9px 14px;
+  }
+
+  .contact-btn-group { justify-content: center; }
+  .contact-btn-group .btn { flex: 1 1 auto; text-align: center; min-width: 120px; }
+
+  footer { padding: 80px 16px 36px 16px; margin-top: 95px; }
+  footer p { font-size: 0.98rem; max-width: 72%; margin: 0 auto; }
+  .chest-container { width: 132px; height: 108px; top: -68px; }
+  .spawned-golden-shrimp { width: 118px; left: 16px; }
+
+  /* Compact HUD button for mobile */
+  .bottom-hud { bottom: 14px; right: 14px; }
+  .grimoire-btn { width: 88px; height: 88px; padding: 6px 8px 10px 8px; }
+  .grimoire-btn img.book-cover-icon { width: 36px; height: 36px; }
+  .grimoire-btn span { font-size: 0.68rem; max-width: 68px; margin-top: 2px; }
+  .grimoire-badge { width: 34px; height: 34px; font-size: 1rem; top: -8px; right: -8px; }
+  .grimoire-btn-medal { width: 36px; height: 36px; top: -10px; left: -10px; }
+
+  /* Grimoire Modal mobile optimizations */
+  .modal-overlay { padding: 10px; }
+  .grimoire-book {
+    padding: 24px 16px 28px 16px;
+    max-height: 90vh;
+    border-image-width: 24px;
+  }
+  .grimoire-header {
+    position: relative;
+    padding-right: 52px;
+    gap: 10px;
+  }
+  .grimoire-title-group h2 { font-size: 1.55rem; }
+  .grimoire-progress { font-size: 0.95rem; }
+  .grimoire-intro-text { font-size: 0.95rem; margin-bottom: 14px; }
+  .close-modal-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+  }
+  .golden-medal-banner {
+    width: 100%;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .golden-medal-banner img { width: 40px; height: 40px; }
+
+  /* 2-column compact Grimoire cards on phones */
+  .grimoire-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .grimoire-entry {
+    padding: 18px 10px 16px 10px;
+    border-image-width: 18px;
+  }
+  .entry-img-box { height: 70px; margin-bottom: 8px; }
+  .entry-img-box img { height: 54px; }
+  .grimoire-entry h3 { font-size: 1rem; }
+  .grimoire-entry p { font-size: 0.8rem; line-height: 1.3; }
+  .rarity-tag { font-size: 0.65rem; padding: 6px 10px 3px 10px; left: 6px; }
+  .new-entry-tag { font-size: 0.68rem; padding: 6px 10px 4px 10px; right: -4px; }
+
+  .discovery-toast {
+    white-space: normal;
+    font-size: 0.88rem;
+    padding: 12px 18px 10px 18px;
+  }
+  .discovery-toast.magic-summon {
+    font-size: 0.95rem;
+    padding: 14px 20px 12px 20px;
+  }
+}
+
+/* Extra-small phones (<= 400px) */
+@media (max-width: 400px) {
+  .grimoire-grid { grid-template-columns: 1fr; }
+  .cloud-1 { display: none; }
+}

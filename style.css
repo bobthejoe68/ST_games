@@ -110,8 +110,9 @@ body.boil-tick .boil-fallback { filter: url(#boil-displacement-filter); }
 .cabin-fishershrimp.peek-out { transform: translateY(-24px) translateX(-18px) rotate(-8deg) scale(1); opacity: 1; z-index: 4; }
 @keyframes boatBob { 0% { transform: translateX(-50%) translateY(0px) rotate(-2.5deg); } 100% { transform: translateX(-50%) translateY(8px) rotate(2.5deg); } }
 
+/* calc(100% + 600px) ensures the wave strip never runs out of width during its -600px loop on any screen size */
 .waterline-waves { position: absolute; bottom: -44px; left: 0; width: 100%; height: 74px; z-index: 30; pointer-events: none; overflow: hidden; }
-.wave-strip { position: absolute; left: 0; width: 200%; height: 58px; background-repeat: repeat-x; background-size: 600px 58px; will-change: transform; animation: waveRoll 9s linear infinite; }
+.wave-strip { position: absolute; left: 0; width: calc(100% + 600px); min-width: 1200px; height: 58px; background-repeat: repeat-x; background-size: 600px 58px; will-change: transform; animation: waveRoll 9s linear infinite; }
 .wave-strip.back-wave { top: 0px; opacity: 0.92; animation-duration: 13s; animation-direction: reverse; z-index: 1; }
 .wave-strip.front-wave { top: 16px; z-index: 2; }
 @keyframes waveRoll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-600px, 0, 0); } }
@@ -206,7 +207,7 @@ header { text-align: center; margin-bottom: 70px; }
 /* 9-slice border-image prevents boxes from stretching or squishing on any screen height/width */
 .logo-container {
   display: flex; align-items: center; justify-content: center; gap: 32px;
-  width: 100%;
+  width: 100%; background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-banner-box.png') 52 fill / 34px / 0 stretch;
   padding: 32px 46px 42px 46px; margin-bottom: 24px;
@@ -227,7 +228,7 @@ header { text-align: center; margin-bottom: 70px; }
 
 nav { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
 nav a {
-  text-decoration: none;
+  text-decoration: none; background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-nav-btn.png') 28 fill / 18px / 0 stretch;
   color: var(--border-color); font-size: 1.25rem;
@@ -237,6 +238,7 @@ nav a:hover { transform: translateY(-4px); filter: brightness(1.05); }
 nav a:active { transform: translateY(3px); }
 
 .content-card {
+  background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-card-box.png') 64 fill / 38px / 0 stretch;
   padding: 44px 46px 54px 46px; margin-bottom: 80px;
@@ -254,7 +256,7 @@ p { font-size: 1.18rem; line-height: 1.6; margin-bottom: 16px; }
 
 .games-subsection { margin-top: 22px; }
 .subsection-heading {
-  font-size: 1.55rem; color: var(--border-color);
+  font-size: 1.55rem; color: var(--border-color); background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-nav-btn.png') 28 fill / 18px / 0 stretch;
   display: inline-block; padding: 14px 26px 12px 26px; margin-bottom: 18px; text-transform: lowercase;
@@ -262,6 +264,7 @@ p { font-size: 1.18rem; line-height: 1.6; margin-bottom: 16px; }
 
 .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 26px; }
 .game-card {
+  background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-game-card.png') 50 fill / 28px / 0 stretch;
   padding: 24px 24px 30px 24px; text-align: center; transition: transform 0.2s ease;
@@ -297,7 +300,7 @@ p { font-size: 1.18rem; line-height: 1.6; margin-bottom: 16px; }
 .ld-award-medal:hover .ld-medal-tooltip, .ld-award-medal:focus .ld-medal-tooltip { opacity: 1; transform: translateY(0) scale(1); }
 
 .btn {
-  display: inline-block;
+  display: inline-block; background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-action-btn.png') 24 fill / 16px / 0 stretch;
   color: white; text-decoration: none; padding: 15px 26px 13px 26px;
@@ -356,6 +359,7 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
 .modal-overlay.hidden { display: none !important; }
 
 .grimoire-book {
+  background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-grimoire-book-box.png') 64 fill / 36px / 0 stretch;
   max-width: 900px; width: 100%; max-height: 88vh; overflow-y: auto;
@@ -368,7 +372,7 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
 .grimoire-intro-text { margin-bottom: 18px; font-size: 1.05rem; }
 
 .golden-medal-banner {
-  display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: center; gap: 12px; background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-medal-banner.png') 28 fill / 18px / 0 stretch;
   padding: 12px 22px 13px 22px; animation: medalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -391,6 +395,7 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
 .grimoire-submenu-wrap { position: relative; padding: 6px; border-radius: 26px; }
 .grimoire-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; position: relative; z-index: 2; }
 .grimoire-entry {
+  background: none;
   border: 1px solid transparent;
   border-image: url('assets/ui-game-card.png') 50 fill / 24px / 0 stretch;
   padding: 22px 16px 24px 16px; text-align: center; position: relative; transition: transform 0.2s ease;
@@ -430,30 +435,25 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
    TOUCHSCREEN & MOBILE OPTIMIZATIONS
    ========================================================================== */
 
-/* On touchscreens (no mouse hover), prevent foreground coral layers from blocking taps on background shrimp */
 @media (hover: none) and (pointer: coarse) {
   .coral-piece { pointer-events: none; }
 }
 
-/* Tablet & Mobile Layout (<= 768px) */
 @media (max-width: 768px) {
   :root { --sky-height: 130px; }
 
-  /* Sky zone elements scaled & spaced so they don't collide with the boat */
   .cartoon-sun { width: 54px; height: 54px; left: 4%; top: 10px; }
   .cloud-1 { width: 88px; left: 17%; top: 16px; }
   .cloud-2 { width: 100px; right: 5%; top: 14px; }
   .boat-wrapper { width: 155px; height: 110px; bottom: -18px; }
   .cabin-fishershrimp { width: 74px; top: 22px; left: 38px; }
 
-  /* Tame coral visual clutter on narrow screens */
   .coral-piece {
     width: clamp(90px, 26vw, 138px) !important;
     opacity: 0.72;
   }
   .coral-left { left: -24px; }
   .coral-right { right: -24px; }
-  /* Hide every 4th coral piece on mobile to open up more water space */
   .aquarium-layer .coral-piece:nth-child(4) { display: none; }
 
   main { padding: 48px 14px 36px 14px; }
@@ -474,7 +474,6 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
     text-shadow: 2.5px 2.5px 0px var(--border-color);
   }
 
-  /* 2x2 balanced thumb-friendly navigation grid on mobile */
   nav {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -519,7 +518,6 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
   .chest-container { width: 132px; height: 108px; top: -68px; }
   .spawned-golden-shrimp { width: 118px; left: 16px; }
 
-  /* Compact HUD button for mobile */
   .bottom-hud { bottom: 14px; right: 14px; }
   .grimoire-btn { width: 88px; height: 88px; padding: 6px 8px 10px 8px; }
   .grimoire-btn img.book-cover-icon { width: 36px; height: 36px; }
@@ -527,7 +525,6 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
   .grimoire-badge { width: 34px; height: 34px; font-size: 1rem; top: -8px; right: -8px; }
   .grimoire-btn-medal { width: 36px; height: 36px; top: -10px; left: -10px; }
 
-  /* Grimoire Modal mobile optimizations */
   .modal-overlay { padding: 10px; }
   .grimoire-book {
     padding: 24px 16px 28px 16px;
@@ -557,7 +554,6 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
   }
   .golden-medal-banner img { width: 40px; height: 40px; }
 
-  /* 2-column compact Grimoire cards on phones */
   .grimoire-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
@@ -584,7 +580,6 @@ footer p { font-size: 1.15rem; margin-bottom: 0; }
   }
 }
 
-/* Extra-small phones (<= 400px) */
 @media (max-width: 400px) {
   .grimoire-grid { grid-template-columns: 1fr; }
   .cloud-1 { display: none; }

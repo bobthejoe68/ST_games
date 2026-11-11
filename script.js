@@ -4,6 +4,34 @@ function isMobileViewport() {
   return window.matchMedia('(max-width: 768px)').matches;
 }
 
+// Shield underlying buttons/links from ghost clicks when tapping a shrimp or bubble on mobile
+let lastAquariumTapTime = 0;
+
+function shieldUnderlyingClick(e) {
+  lastAquariumTapTime = performance.now();
+  e.stopPropagation();
+}
+
+window.addEventListener('click', (e) => {
+  if (performance.now() - lastAquariumTapTime < 420) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+  }
+}, true);
+
+function bindAquariumTap(el, onTap) {
+  el.addEventListener('touchstart', (e) => {
+    if (e.cancelable) e.preventDefault();
+    e.stopPropagation();
+  }, { passive: false });
+
+  el.addEventListener('pointerdown', (e) => {
+    shieldUnderlyingClick(e);
+    onTap(e);
+  });
+}
+
 function generateTwoFrameSpritesheet(img) {
   const w = img.naturalWidth || img.width || 160;
   const h = img.naturalHeight || img.height || 110;
@@ -237,7 +265,6 @@ function showDiscoveryToast(x, y, text, mode = 'new') {
   toast.textContent = text;
   document.body.appendChild(toast);
 
-  // Clamp coordinates so toast never clips off the left/right/top edges on mobile phones
   const toastWidth = toast.offsetWidth || 220;
   const halfW = toastWidth / 2 + 12;
   const clampedX = Math.max(halfW, Math.min(window.innerWidth - halfW, x));
@@ -250,7 +277,7 @@ function showDiscoveryToast(x, y, text, mode = 'new') {
 
 const boatTrigger = document.getElementById('boat-trigger');
 let fisherPeekTimeout = null;
-boatTrigger.addEventListener('pointerdown', (e) => {
+bindAquariumTap(boatTrigger, (e) => {
   cabinShrimpEl.classList.add('peek-out');
   unlockSpecies(fisherSpecies, e.clientX, e.clientY);
   if (fisherPeekTimeout) clearTimeout(fisherPeekTimeout);
@@ -259,7 +286,7 @@ boatTrigger.addEventListener('pointerdown', (e) => {
 
 const chestTrigger = document.getElementById('treasure-chest-trigger');
 let chestBusy = false;
-chestTrigger.addEventListener('pointerdown', (e) => {
+bindAquariumTap(chestTrigger, (e) => {
   unlockSpecies(goldenSpecies, e.clientX, e.clientY);
   if (chestBusy) return;
   chestBusy = true;
@@ -354,7 +381,7 @@ function summonBubblemancer() {
   wrapper.appendChild(img);
   shrimpFrontLayer.appendChild(wrapper);
 
-  wrapper.addEventListener('pointerdown', (e) => {
+  bindAquariumTap(wrapper, (e) => {
     unlockSpecies(bubblemancerSpecies, e.clientX, e.clientY);
     const rect = wrapper.getBoundingClientRect();
     spawnWizardSmokeAndSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -414,7 +441,7 @@ function spawnBubble() {
   const duration = Math.random() * 7 + 6;
   bubble.style.animationDuration = `${duration}s`;
 
-  bubble.addEventListener('pointerdown', () => popBubbleElement(bubble, true));
+  bindAquariumTap(bubble, () => popBubbleElement(bubble, true));
   bubbleLayer.appendChild(bubble);
 
   setTimeout(() => {
@@ -482,7 +509,6 @@ function spawnShrimp(startImmediatelyInsideScreen = false) {
 
   const mobile = isMobileViewport();
   const activeCount = shrimpBackLayer.childElementCount + shrimpFrontLayer.childElementCount;
-  // Cap simultaneous wild shrimp on mobile so narrow screens don't get overcrowded
   if (mobile && activeCount >= 5 && !startImmediatelyInsideScreen) return;
 
   const species = pickWeightedWildShrimp(startImmediatelyInsideScreen);
@@ -527,7 +553,7 @@ function spawnShrimp(startImmediatelyInsideScreen = false) {
     wrapper.style.animationDelay = `-${(Math.random() * 0.65 + 0.15) * duration}s`;
   }
 
-  wrapper.addEventListener('pointerdown', (e) => {
+  bindAquariumTap(wrapper, (e) => {
     unlockSpecies(species, e.clientX, e.clientY);
 
     const rect = wrapper.getBoundingClientRect();
